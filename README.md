@@ -51,7 +51,8 @@ and `rt` library and the `c++11` flags:
 ```bash
 g++ -std=c++11 -o a.out example.cpp -l pthread -l rt
 ```
-
+Note: The object does not need to be created at the beginning of `main()`. The
+monitor can also be used to track only certain aspects of the executing program.
 
 ## Output
 
@@ -66,6 +67,9 @@ time_ms|pid|VmPeak|VmSize|VmHWM|VmRSS|VmData|VmPTE|event
 201|12382|191279104|184373248|91262976|84426752|167329792|237568|"sort vector"
 251|12382|201809920|201809920|103350272|103350272|184766464|270336|"sort vector"
 301|12382|220192768|220192768|122814464|122814464|203149312|311296|"sort vector"
+
+where `time_ms` corresponds to the number of milliseconds since the creation of
+the object.
 
 
 ## Visualization
