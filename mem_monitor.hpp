@@ -100,46 +100,6 @@ class mem_monitor
             return num;
         }
 
-        mem_stat get_current_stats() {
-            mem_stat stat;
-            stat.timestamp = steady_clock::now();
-            stat.event_id = m_cur_event_id;
-
-            // read memory stats
-            {
-                std::ifstream pfs("/proc/self/status");
-                std::string line;
-                while (std::getline(pfs, line)) {
-                    auto key_end_pos = line.find(':');
-                    auto value_start_pos = line.find_first_not_of('\t', key_end_pos + 1);
-                    auto key = line.substr(0, key_end_pos);
-                    if (key == "Pid") {
-                        stat.pid = extract_number(line, value_start_pos);
-                    }
-                    if (key == "VmPeak") {
-                        stat.VmPeak = extract_number(line, value_start_pos, true);
-                    }
-                    if (key == "VmSize") {
-                        stat.VmSize = extract_number(line, value_start_pos, true);
-                    }
-                    if (key == "VmHWM") {
-                        stat.VmHWM = extract_number(line, value_start_pos, true);
-                    }
-                    if (key == "VmRSS") {
-                        stat.VmRSS = extract_number(line, value_start_pos, true);
-                    }
-                    if (key == "VmData") {
-                        stat.VmData = extract_number(line, value_start_pos, true);
-                    }
-                    if (key == "VmPTE") {
-                        stat.VmPTE = extract_number(line, value_start_pos, true);
-                    }
-                }
-            }
-
-            return stat;
-        }
-
         bool write_needed() {
             if (m_memory_limit_mb * 1024 * 1024 < m_stats.size() * sizeof(mem_stat))
                 return true;
@@ -202,6 +162,48 @@ class mem_monitor
             m_event_names.push_back(ev);
             m_cur_event_id++;
         }
+
+
+        mem_stat get_current_stats() {
+            mem_stat stat;
+            stat.timestamp = steady_clock::now();
+            stat.event_id = m_cur_event_id;
+
+            // read memory stats
+            {
+                std::ifstream pfs("/proc/self/status");
+                std::string line;
+                while (std::getline(pfs, line)) {
+                    auto key_end_pos = line.find(':');
+                    auto value_start_pos = line.find_first_not_of('\t', key_end_pos + 1);
+                    auto key = line.substr(0, key_end_pos);
+                    if (key == "Pid") {
+                        stat.pid = extract_number(line, value_start_pos);
+                    }
+                    if (key == "VmPeak") {
+                        stat.VmPeak = extract_number(line, value_start_pos, true);
+                    }
+                    if (key == "VmSize") {
+                        stat.VmSize = extract_number(line, value_start_pos, true);
+                    }
+                    if (key == "VmHWM") {
+                        stat.VmHWM = extract_number(line, value_start_pos, true);
+                    }
+                    if (key == "VmRSS") {
+                        stat.VmRSS = extract_number(line, value_start_pos, true);
+                    }
+                    if (key == "VmData") {
+                        stat.VmData = extract_number(line, value_start_pos, true);
+                    }
+                    if (key == "VmPTE") {
+                        stat.VmPTE = extract_number(line, value_start_pos, true);
+                    }
+                }
+            }
+
+            return stat;
+        }
+
 };
 
 #endif
